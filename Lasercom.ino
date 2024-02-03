@@ -52,7 +52,7 @@ void loop() {
     WORD += Letter;    
     Serial.print(Letter);
 
-    swtich (Letter) {
+    switch (Letter) {
       case 'a':
       case 'A':
         dot();
