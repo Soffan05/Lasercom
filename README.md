@@ -1,5 +1,0 @@
-# Rubrik
-
-## Subrubrik
-
-Mitt repo
