@@ -5,13 +5,12 @@
 //Space between words = 7 Units
 
 
-#define LED 8
+#define LASER 8
 #define sensor A0
 
+#include <LiquidCrystal_I2C.h>
 #include <string.h>
 
-//Variabler
-String WORD = ""; //
 
 
 //Variabler
@@ -29,17 +28,17 @@ int i = 0; //Räknar timingen mellan singnal
 
 void dot() { //Funktion till att blinka en DOT (Kort blinkning)
   Serial.print(" .");
-  digitalWrite(LED, LOW);
+  digitalWrite(LASER, LOW);
   delay(500);
-  digitalWrite(LED, HIGH);
+  digitalWrite(LASER, HIGH);
   delay(500);
 }
 
 void dash() { //Funktion till att blinka en DASH (Lång blinkning)
   Serial.print(" -");
-  digitalWrite(LED, LOW);
+  digitalWrite(LASER, LOW);
   delay(500);
-  digitalWrite(LED, LOW);
+  digitalWrite(LASER, LOW);
   delay(500);
 }
 
@@ -137,8 +136,9 @@ String output(String encrypt) { //Funktion för att översätta morsekoden. Swit
 
 void setup() {
   Serial.begin(9600);
-  pinMode(LED, OUTPUT);
-  digitalWrite(LED, HIGH);
+  pinMode(LASER, OUTPUT);
+  
+  digitalWrite(LASER, HIGH);
 
 }
 
