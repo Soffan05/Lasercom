@@ -11,7 +11,9 @@
 #include <LiquidCrystal_I2C.h>
 #include <string.h>
 
-
+int X = 16;
+int Y = 2; 
+LiquidCrystal_I2C lcd(0x27, X, Y);
 
 //Variabler
 int sens_state = 0; //Ljussensorns värde
@@ -23,59 +25,58 @@ String encrypt; //
 String translator;
 String decrypt;
 String result;
+bool encryptionDone = false;
 String Morse_code = "";
 int i = 0; //Räknar timingen mellan singnal
 
 void dot() { //Funktion till att blinka en DOT (Kort blinkning)
   Serial.print(" .");
   digitalWrite(LASER, LOW);
-  delay(500);
+  delay(200);
   digitalWrite(LASER, HIGH);
-  delay(500);
+  delay(800);
 }
 
 void dash() { //Funktion till att blinka en DASH (Lång blinkning)
   Serial.print(" -");
   digitalWrite(LASER, LOW);
-  delay(500);
+  delay(600);
   digitalWrite(LASER, LOW);
-  delay(500);
+  delay(800);
 }
 
 String input(int sens_state) { //Funktion för att omvandla lasersingnal till kod
   String encrypt = "";
+  count = 0;
   while (true) {
-    do {
+    do  {
       //FAS 1
       count++;
-      sens_state = analogRead(sensor);
+      sens_state = digitalRead(sensor);
       delay(timing);
       //Serial.println(sens_state);
-    } while (sens_state < 700);
+    } while (sens_state == 0);
 
     //FAS 2
-    //Serial.println(count);
-    switch (count) {
-      case 3:
+    Serial.println(count);
+
+    if (count <= 10) {
         encrypt += ".";
-        count = 0;
         break;
-      case 5:
+    } else if (count > 10) {
         encrypt += "-";
-        count = 0;
-        break;
-      default:
-        Serial.println(encrypt);
-        count = 0;
         break;
     }
-    return encrypt; //RETURNING STRING
-    break;
+
   }
+  count = 0;
+  return encrypt; //RETURNING STRING
+
 }
 
 
 String output(String encrypt) { //Funktion för att översätta morsekoden. Switch commandot funkade inte pga det gick inte att läga in sträningar i case. D: 
+      translator = "";
       if (encrypt == ".-") {
       translator = translator + "A";
       } else if (encrypt == "-...") {
@@ -139,6 +140,15 @@ void setup() {
   pinMode(LASER, OUTPUT);
   
   digitalWrite(LASER, HIGH);
+
+  lcd.init();
+  lcd.backlight();
+  
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Waiting for");
+  lcd.setCursor(0,1);
+  lcd.print("signal ...");
 
 }
 
@@ -326,45 +336,49 @@ void loop() {
   }
 
 
-  sens_state = analogRead(sensor); //Ljussensorn kollar efter laserns ljus
-  //Serial.println(sens_state);
-
-  if (sens_state < 700) { //Här översätter programmet singnal till morsekod
+  sens_state = digitalRead(sensor); //Ljussensorn kollar efter laserns ljus
+  //Serial.println("Start");
+  if (!encryptionDone && sens_state == 0) {
     while (i < Next_sing) {
-      i = 0;
-      sens_state = analogRead(sensor); //Kollar om lasern fortfarande lyser loopen 
+      Serial.print("Encrypting Morse Code: ");
       encrypt = input(sens_state);
-      Morse_code += encrypt; // "." eller "-" ska inkluderas i morsekoden
+      Morse_code += encrypt;
+      sens_state = digitalRead(sensor);
       Serial.println(Morse_code);
-    
-      while (sens_state > 700) { //Här räknar programmet ifall loopen ska stoppas eller fortsätta. Detta behövs för att programmet inte ska av mistag översätta morsekoden till en annan bokstav
-        i++; 
+
+      while (sens_state == 1) {
+        sens_state = digitalRead(sensor);
+        i++;
         Serial.println(i);
-        sens_state = analogRead(sensor);
-        if (sens_state < 700) {
+
+        if (sens_state == 0) { //Nästa signal
+          i = 0;
           break;
-        } else if (i > Next_sing) {
+        } else if (i > Next_sing) { //Gå vidare till översättning
           break;
         }
       }
-    } 
-    Serial.println("NEXT"); //Översättningen från singal till morsekod är klar
+
+    }
+
+    encryptionDone = true;
   }
 
-  if (i > Next_sing) { //Här översätter programmet morsekoden till bokstäver och lägger in dem i en sträng variabel "result"
-    decrypt = output(Morse_code); //Funktionen retunerar en bokstav i variabeln "decrypt"
-    Morse_code = ""; //Morsekoden börjar om
-    //Serial.println(decrypt);
-    result += decrypt; //Den översättande bokstaven lägs in i resultatet
-    Serial.println(result);
-    Serial.println("DONE"); //Översättningen är klar
+  if (encryptionDone) {
+    decrypt = output(Morse_code);
+    result += decrypt;
+    Morse_code = "";
+    //Serial.println(result);
+    i = 0;
     
+    lcd.clear();
+    lcd.print(result);
+    encryptionDone = false;
+    Serial.println("Next signal");
   }
-
-  i = 0;
-
-
 }
+
+
 
     
 
