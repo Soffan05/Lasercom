@@ -76,59 +76,58 @@ String input(int sens_state) { //Funktion för att omvandla lasersingnal till ko
 
 
 String output(String encrypt) { //Funktion för att översätta morsekoden. Switch commandot funkade inte pga det gick inte att läga in sträningar i case. D: 
-      translator = "";
       if (encrypt == ".-") {
-      translator = translator + "A";
+      translator = "A";
       } else if (encrypt == "-...") {
-        translator = translator + "B";
+        translator = "B";
       } else if (encrypt == "-.-.") {
-        translator = translator + "C";
+        translator = "C";
       } else if (encrypt == "-..") {
-        translator = translator + "D";
+        translator = "D";
       } else if (encrypt == ".") {
-        translator = translator + "E";
+        translator = "E";
       } else if (encrypt == "..-.") {
-        translator = translator + "F";
+        translator = "F";
       } else if (encrypt == "--.") {
-        translator = translator + "G";
+        translator = "G";
       } else if (encrypt == "....") {
-        translator = translator + "H";
+        translator = "H";
       } else if (encrypt == "..") {
-        translator = translator + "I";
+        translator = "I";
       } else if (encrypt == ".---") {
-        translator = translator + "J";
+        translator = "J";
       } else if (encrypt == "-.-") {
-        translator = translator + "K";
+        translator = "K";
       } else if (encrypt == ".-..") {
-        translator = translator + "L";
+        translator = "L";
       } else if (encrypt == "--") {
-        translator = translator + "M"; 
+        translator = "M"; 
       } else if (encrypt == "-.") {
-        translator = translator + "N";
+        translator = "N";
       } else if(encrypt == "---") {
-        translator = translator + "O";
+        translator = "O";
       } else if (encrypt == ".--.") {
-        translator = translator + "P";
+        translator = "P";
       } else if (encrypt == "--.-") {
-        translator = translator + "Q";
+        translator = "Q";
       } else if (encrypt == ".-.") {
-        translator = translator + "R";
+        translator = "R";
       } else if (encrypt == "...") {
-        translator = translator + "S";
+        translator = "S";
       } else if (encrypt == "-") {
-        translator = translator + "T";
+        translator = "T";
       } else if (encrypt == "..-") {
-        translator = translator + "U";
+        translator = "U";
       } else if (encrypt == "...-") {
-        translator = translator + "V";
+        translator = "V";
       } else if (encrypt == ".--") {
-        translator = translator + "W";
+        translator = "W";
       } else if (encrypt == "-..-") {
-        translator = translator + "X";
+        translator = "X";
       } else if (encrypt == "-.--") {
-        translator = translator + "Y";
+        translator = "Y";
       } else if (encrypt == "--..") {
-        translator = translator + "Z";
+        translator = "Z";
       }
   return translator;
 }
