@@ -19,15 +19,16 @@ LiquidCrystal_I2C lcd(0x27, X, Y);
 int sens_state = 0; //Ljussensorns värde
 int count = 0; //Hur länge ljuset lyser i singnalen (kolla input funktionen)
 const int timing = 50; //En konstant timing för olika saker
-int NEXT_SIGNAL = 200; // Timingen när nästa bokstav ska komma
+const int NEXT_LETTER = 200; // Timingen när nästa bokstav ska komma
+const int NEXT_WORD = 250; //Denna ska alltid vara större än NEXT_LETTER
 const int BLINK = 200;
 String ENCRYPT; //
 String translator;
 String DECRYPT;
-String result;
+String RESULT;
 bool encryptionDone = false;
 DOT_THRESHOLD = 10;
-String Morse_code = "";
+String MORSE_CODE = "";
 int SIGNAL_TIME = 0; //Räknar timingen mellan singnal
 
 void dot() { //Funktion till att blinka en DOT (Kort blinkning)
@@ -35,7 +36,7 @@ void dot() { //Funktion till att blinka en DOT (Kort blinkning)
   digitalWrite(LASER, LOW);
   delay(BLINK);
   digitalWrite(LASER, HIGH);
-  delay(800); //Ändra till NEXT_SIGNAL???
+  delay(800); //Ändra till NEXT_LETTER???
 }
 
 void dash() { //Funktion till att blinka en DASH (Lång blinkning)
@@ -43,7 +44,7 @@ void dash() { //Funktion till att blinka en DASH (Lång blinkning)
   digitalWrite(LASER, LOW);
   delay(BLINK * 3);
   digitalWrite(LASER, LOW);
-  delay(800); //Ändra till NEXT_SIGNAL???
+  delay(800); //Ändra till NEXT_LETTER???
 }
 
 String input(int sens_state) { //Funktion för att omvandla lasersingnal till kod
@@ -324,6 +325,8 @@ void loop() {
         dot();
         dot();
         break;
+      case 32:
+        delay(1000); //SPACE 
       default:
         Serial.println("Non lettern\n"); //Ingen bokstav
         break;
@@ -338,12 +341,12 @@ void loop() {
   sens_state = digitalRead(sensor); //Ljussensorn kollar efter laserns ljus
   //Serial.println("Start");
   if (!encryptionDone && sens_state == 0) {
-    while (SIGNAL_TIME < NEXT_SIGNAL) {
+    while (SIGNAL_TIME < NEXT_LETTER) {
       Serial.print("Encrypting Morse Code: ");
       ENCRYPT = input(sens_state);
-      Morse_code += ENCRYPT;
+      MORSE_CODE += ENCRYPT;
       sens_state = digitalRead(sensor);
-      Serial.println(Morse_code);
+      Serial.println(MORSE_CODE);
 
       while (sens_state == 1) {
         sens_state = digitalRead(sensor);
@@ -351,27 +354,29 @@ void loop() {
         Serial.println(i);
 
         if (sens_state == 0) { //Nästa signal
-          SIGNAL_TIME = 0;
-          break;
-        } else if (i > NEXT_SIGNAL) { //Gå vidare till översättning
           break;
         }
-      }
-
-    }
+          
+        if (SIGNAL_TIME > NEXT_LETTER) { //Nästa bokstav
+          SIGNAL_TIME = 0;
+        }
+        if (SIGNAL_TIME > NEXT_WORD) { //Nästa ord
+          SIGNAL_TIME = 0;
+          RESULT += " ";
+        }
 
     encryptionDone = true;
   }
 
   if (encryptionDone) {
-    DECRYPT = output(Morse_code);
-    result += DECRYPT;
-    Morse_code = "";
-    //Serial.println(result);
+    DECRYPT = output(MORSE_CODE);
+    RESULT += DECRYPT;
+    MORSE_CODE = "";
+    //Serial.println(RESULT);
     i = 0;
     
     lcd.clear();
-    lcd.print(result);
+    lcd.print(RESULT);
     encryptionDone = false;
     Serial.println("Next signal");
   }
