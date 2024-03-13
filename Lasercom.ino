@@ -19,34 +19,35 @@ LiquidCrystal_I2C lcd(0x27, X, Y);
 int sens_state = 0; //Ljussensorns värde
 int count = 0; //Hur länge ljuset lyser i singnalen (kolla input funktionen)
 const int timing = 50; //En konstant timing för olika saker
-int Next_sing = 200; // Timingen när nästa bokstav ska komma
-
-String encrypt; //
+int NEXT_SIGNAL = 200; // Timingen när nästa bokstav ska komma
+const int BLINK = 200;
+String ENCRYPT; //
 String translator;
-String decrypt;
+String DECRYPT;
 String result;
 bool encryptionDone = false;
+DOT_THRESHOLD = 10;
 String Morse_code = "";
-int i = 0; //Räknar timingen mellan singnal
+int SIGNAL_TIME = 0; //Räknar timingen mellan singnal
 
 void dot() { //Funktion till att blinka en DOT (Kort blinkning)
   Serial.print(" .");
   digitalWrite(LASER, LOW);
-  delay(200);
+  delay(BLINK);
   digitalWrite(LASER, HIGH);
-  delay(800);
+  delay(800); //Ändra till NEXT_SIGNAL???
 }
 
 void dash() { //Funktion till att blinka en DASH (Lång blinkning)
   Serial.print(" -");
   digitalWrite(LASER, LOW);
-  delay(600);
+  delay(BLINK * 3);
   digitalWrite(LASER, LOW);
-  delay(800);
+  delay(800); //Ändra till NEXT_SIGNAL???
 }
 
 String input(int sens_state) { //Funktion för att omvandla lasersingnal till kod
-  String encrypt = "";
+  String ENCRYPT = "";
   count = 0;
   while (true) {
     do  {
@@ -60,73 +61,73 @@ String input(int sens_state) { //Funktion för att omvandla lasersingnal till ko
     //FAS 2
     Serial.println(count);
 
-    if (count <= 10) {
-        encrypt += ".";
+    if (count <= DOT_THRESHOLD) {
+        ENCRYPT += ".";
         break;
-    } else if (count > 10) {
-        encrypt += "-";
+    } else if (count > DOT_THRESHOLD) {
+        ENCRYPT += "-";
         break;
     }
 
   }
   count = 0;
-  return encrypt; //RETURNING STRING
+  return ENCRYPT; //RETURNING STRING
 
 }
 
 
-String output(String encrypt) { //Funktion för att översätta morsekoden. Switch commandot funkade inte pga det gick inte att läga in sträningar i case. D: 
-      if (encrypt == ".-") {
+String output(String ENCRYPT) { //Funktion för att översätta morsekoden. Switch commandot funkade inte pga det gick inte att läga in sträningar i case. D: 
+      if (ENCRYPT == ".-") {
       translator = "A";
-      } else if (encrypt == "-...") {
+      } else if (ENCRYPT == "-...") {
         translator = "B";
-      } else if (encrypt == "-.-.") {
+      } else if (ENCRYPT == "-.-.") {
         translator = "C";
-      } else if (encrypt == "-..") {
+      } else if (ENCRYPT == "-..") {
         translator = "D";
-      } else if (encrypt == ".") {
+      } else if (ENCRYPT == ".") {
         translator = "E";
-      } else if (encrypt == "..-.") {
+      } else if (ENCRYPT == "..-.") {
         translator = "F";
-      } else if (encrypt == "--.") {
+      } else if (ENCRYPT == "--.") {
         translator = "G";
-      } else if (encrypt == "....") {
+      } else if (ENCRYPT == "....") {
         translator = "H";
-      } else if (encrypt == "..") {
+      } else if (ENCRYPT == "..") {
         translator = "I";
-      } else if (encrypt == ".---") {
+      } else if (ENCRYPT == ".---") {
         translator = "J";
-      } else if (encrypt == "-.-") {
+      } else if (ENCRYPT == "-.-") {
         translator = "K";
-      } else if (encrypt == ".-..") {
+      } else if (ENCRYPT == ".-..") {
         translator = "L";
-      } else if (encrypt == "--") {
+      } else if (ENCRYPT == "--") {
         translator = "M"; 
-      } else if (encrypt == "-.") {
+      } else if (ENCRYPT == "-.") {
         translator = "N";
-      } else if(encrypt == "---") {
+      } else if(ENCRYPT == "---") {
         translator = "O";
-      } else if (encrypt == ".--.") {
+      } else if (ENCRYPT == ".--.") {
         translator = "P";
-      } else if (encrypt == "--.-") {
+      } else if (ENCRYPT == "--.-") {
         translator = "Q";
-      } else if (encrypt == ".-.") {
+      } else if (ENCRYPT == ".-.") {
         translator = "R";
-      } else if (encrypt == "...") {
+      } else if (ENCRYPT == "...") {
         translator = "S";
-      } else if (encrypt == "-") {
+      } else if (ENCRYPT == "-") {
         translator = "T";
-      } else if (encrypt == "..-") {
+      } else if (ENCRYPT == "..-") {
         translator = "U";
-      } else if (encrypt == "...-") {
+      } else if (ENCRYPT == "...-") {
         translator = "V";
-      } else if (encrypt == ".--") {
+      } else if (ENCRYPT == ".--") {
         translator = "W";
-      } else if (encrypt == "-..-") {
+      } else if (ENCRYPT == "-..-") {
         translator = "X";
-      } else if (encrypt == "-.--") {
+      } else if (ENCRYPT == "-.--") {
         translator = "Y";
-      } else if (encrypt == "--..") {
+      } else if (ENCRYPT == "--..") {
         translator = "Z";
       }
   return translator;
@@ -338,22 +339,22 @@ void loop() {
   sens_state = digitalRead(sensor); //Ljussensorn kollar efter laserns ljus
   //Serial.println("Start");
   if (!encryptionDone && sens_state == 0) {
-    while (i < Next_sing) {
+    while (SIGNAL_TIME < NEXT_SIGNAL) {
       Serial.print("Encrypting Morse Code: ");
-      encrypt = input(sens_state);
-      Morse_code += encrypt;
+      ENCRYPT = input(sens_state);
+      Morse_code += ENCRYPT;
       sens_state = digitalRead(sensor);
       Serial.println(Morse_code);
 
       while (sens_state == 1) {
         sens_state = digitalRead(sensor);
-        i++;
+        SIGNAL_TIME++;
         Serial.println(i);
 
         if (sens_state == 0) { //Nästa signal
-          i = 0;
+          SIGNAL_TIME = 0;
           break;
-        } else if (i > Next_sing) { //Gå vidare till översättning
+        } else if (i > NEXT_SIGNAL) { //Gå vidare till översättning
           break;
         }
       }
@@ -364,8 +365,8 @@ void loop() {
   }
 
   if (encryptionDone) {
-    decrypt = output(Morse_code);
-    result += decrypt;
+    DECRYPT = output(Morse_code);
+    result += DECRYPT;
     Morse_code = "";
     //Serial.println(result);
     i = 0;
