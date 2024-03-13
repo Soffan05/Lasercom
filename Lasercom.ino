@@ -129,7 +129,7 @@ String output(String ENCRYPT) { //Funktion för att översätta morsekoden. Swit
         translator = "Y";
       } else if (ENCRYPT == "--..") {
         translator = "Z";
-      }
+      } 
   return translator;
 }
 
@@ -158,168 +158,167 @@ void loop() {
 
   if (Serial.available() > 0) { //Denna kommer aktiveras när man skriver något i Serial Monitor
     while (true) {
-    
-    
-    char Letter = Serial.read(); 
+     
+    int Letter = Serial.read(); 
     Serial.print(Letter);
 
  
     switch (Letter) { //Här kollar programmet vilken bokstav som är på plats inom "The serial buffer".
-      case 'a':
-      case 'A':
+      case 65: //A
+      case 97:
         dot();
         dash();
         break;
-      case 'b':
-      case 'B':
+      case 66: //B
+      case 98:
         dash();
-        dot();
-        dot();
-        dot();
-        break;
-      case 'c':
-      case 'C':
-        dash();
-        dot();
-        dash();
-        dot();
-        break;
-      case 'd':
-      case 'D':
-        dash();
-        dot();
-        dot();
-        break;
-      case 'e':
-      case 'E':
-        dot();
-        break;
-      case 'f':
-      case 'F':
-        dot();
-        dot();
-        dash();
-        dot();
-        break;
-      case 'g':
-      case 'G':
-        dash();
-        dash();
-        dot();
-        break;
-      case 'h':
-      case 'H':
-        dot();
         dot();
         dot();
         dot();
         break;
-      case 'i':
-      case 'I':
-        dot();
-        dot();
-        break;
-      case 'j':
-      case 'J':
-        dot();
+      case 67: //C
+      case 99:
         dash();
-        dash();
-        dash();
-        break;
-      case 'k':
-      case 'K':
-        dash();
-        dot();
-        dash();
-        break;
-      case 'l':
-      case 'L':
-        dot();
-        dash();
-        dot();
-        dot();
-        break;
-      case 'm':
-      case 'M':
-        dash();
-        dash();
-        break;
-      case 'n':
-      case 'N':
-        dash();
-        dot();
-        break;
-      case 'o':
-      case 'O':
-        dash();
-        dash();
-        dash();
-        break;
-      case 'p':
-      case 'P':
-        dot();
-        dash();
-        dash();
-        dot();
-        break;
-      case 'q':
-      case 'Q':
-        dash();
-        dash();
-        dot();
-        dash();
-        break;
-      case 'r':
-      case 'R':
         dot();
         dash();
         dot();
         break;
-      case 's':
-      case 'S':
+      case 68: //D
+      case 100:
+        dash();
+        dot();
+        dot();
+        break;
+      case 69: //E
+      case 101:
+        dot();
+        break;
+      case 70: //F
+      case 102:
+        dot();
+        dot();
+        dash();
+        dot();
+        break;
+      case 71: //G
+      case 103:
+        dash();
+        dash();
+        dot();
+        break;
+      case 72: //H
+      case 104:
+        dot();
         dot();
         dot();
         dot();
         break;
-      case 't':
-      case 'T':
-        dash();
+      case 73: //
+      case 105:
+        dot();
+        dot();
         break;
-      case 'u':
-      case 'U':
-        dot();
-        dot();
-        dash();
-        break;
-      case 'v':
-      case 'V':
-        dot();
-        dot();
+      case 74: //J
+      case 106:
         dot();
         dash();
-        break;
-      case 'w':
-      case 'W':
-        dot();
         dash();
         dash();
         break;
-      case 'x':
-      case 'X':
+      case 75: //K
+      case 107:
+        dash();
+        dot();
+        dash();
+        break;
+      case 76: //L
+      case 108:
+        dot();
+        dash();
+        dot();
+        dot();
+        break;
+      case 77: //M
+      case 109:
+        dash();
+        dash();
+        break;
+      case 78: //N
+      case 110:
+        dash();
+        dot();
+        break;
+      case 79: //O
+      case 111:
+        dash();
+        dash();
+        dash();
+        break;
+      case 80: //P
+      case 112:
+        dot();
+        dash();
+        dash();
+        dot();
+        break;
+      case 81: //Q
+      case 113:
+        dash();
+        dash();
+        dot();
+        dash();
+        break;
+      case 82: //R
+      case 114:
+        dot();
+        dash();
+        dot();
+        break;
+      case 83: //S
+      case 115:
+        dot();
+        dot();
+        dot();
+        break;
+      case 84: //T
+      case 116:
+        dash();
+        break;
+      case 85: //U
+      case 117:
+        dot();
+        dot();
+        dash();
+        break;
+      case 86: //V
+      case 118:
+        dot();
+        dot();
+        dot();
+        dash();
+        break;
+      case 87: //W
+      case 119:
+        dot();
+        dash();
+        dash();
+        break;
+      case 88: //X
+      case 120:
         dash();
         dot();
         dot();
         dash();
         break;
-      case 'y':
-      case 'Y':
+      case 89: //Y
+      case 121:
         dash();
         dot();
         dash();
         dash();
         break;
-      case 'z':
-      case 'Z':
+      case 90: //Z
+      case 122:
         dash();
         dash();
         dot();
