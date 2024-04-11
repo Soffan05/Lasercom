@@ -393,19 +393,11 @@ void loop() {
         Serial.println("Nästa bokstav");
         break;
       }
-      
-
-      } while (SIGNAL_TIME < NEXT_LETTER || SIGNAL_TIME < NEXT_WORD);
-      
+    } while (SIGNAL_TIME < NEXT_LETTER || SIGNAL_TIME < NEXT_WORD);
        
       encryptionDone = true;
     }
   
-
-
-
-
-
 
   if (encryptionDone) {
     DECRYPT = output(MORSE_CODE);
