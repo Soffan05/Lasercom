@@ -6,7 +6,7 @@
 
 
 #define LASER 8
-#define sensor A0
+#define sensor 6
 
 #include <LiquidCrystal_I2C.h>
 #include <string.h>
@@ -16,37 +16,41 @@ int Y = 2;
 LiquidCrystal_I2C lcd(0x27, X, Y);
 
 //Variabler
-int sens_state = 0; //Ljussensorns värde
+int sens_state = 1; //Ljussensorns värde
 int count = 0; //Hur länge ljuset lyser i singnalen (kolla input funktionen)
 const int timing = 50; //En konstant timing för olika saker
-int Next_sing = 200; // Timingen när nästa bokstav ska komma
-
-String encrypt; //
+const int NEXT_LETTER = 50; // Timingen när nästa bokstav ska komma
+const int NEXT_WORD = 90; //Denna ska alltid vara större än NEXT_LETTER
+const int DOT_BLINK = 100;
+const int DASH_BLINK = DOT_BLINK * 3;
+String ENCRYPT; //
 String translator;
-String decrypt;
-String result;
+String DECRYPT;
+String RESULT;
 bool encryptionDone = false;
-String Morse_code = "";
-int i = 0; //Räknar timingen mellan singnal
+bool signalDone = false;
+int DOT_THRESHOLD = 10;
+String MORSE_CODE = "";
+int SIGNAL_TIME = 0; //Räknar timingen mellan singnal
 
 void dot() { //Funktion till att blinka en DOT (Kort blinkning)
   Serial.print(" .");
   digitalWrite(LASER, LOW);
-  delay(200);
+  delay(BLINK);
   digitalWrite(LASER, HIGH);
-  delay(800);
+  delay(200); //Ändra till NEXT_LETTER???
 }
 
 void dash() { //Funktion till att blinka en DASH (Lång blinkning)
   Serial.print(" -");
   digitalWrite(LASER, LOW);
-  delay(600);
-  digitalWrite(LASER, LOW);
-  delay(800);
+  delay(BLINK * 3);
+  digitalWrite(LASER, HIGH);
+  delay(200); //Ändra till NEXT_LETTER???
 }
 
 String input(int sens_state) { //Funktion för att omvandla lasersingnal till kod
-  String encrypt = "";
+  String ENCRYPT = "";
   count = 0;
   while (true) {
     do  {
@@ -54,82 +58,81 @@ String input(int sens_state) { //Funktion för att omvandla lasersingnal till ko
       count++;
       sens_state = digitalRead(sensor);
       delay(timing);
-      //Serial.println(sens_state);
+      //Serial.println(count);
     } while (sens_state == 0);
 
     //FAS 2
-    Serial.println(count);
+    //Serial.println(count);
 
-    if (count <= 10) {
-        encrypt += ".";
+    if (count <= DOT_THRESHOLD) {
+        ENCRYPT += ".";
         break;
-    } else if (count > 10) {
-        encrypt += "-";
+    } else if (count > DOT_THRESHOLD) {
+        ENCRYPT += "-";
         break;
     }
 
   }
   count = 0;
-  return encrypt; //RETURNING STRING
+  return ENCRYPT; //RETURNING STRING
 
 }
 
 
-String output(String encrypt) { //Funktion för att översätta morsekoden. Switch commandot funkade inte pga det gick inte att läga in sträningar i case. D: 
-      translator = "";
-      if (encrypt == ".-") {
-      translator = translator + "A";
-      } else if (encrypt == "-...") {
-        translator = translator + "B";
-      } else if (encrypt == "-.-.") {
-        translator = translator + "C";
-      } else if (encrypt == "-..") {
-        translator = translator + "D";
-      } else if (encrypt == ".") {
-        translator = translator + "E";
-      } else if (encrypt == "..-.") {
-        translator = translator + "F";
-      } else if (encrypt == "--.") {
-        translator = translator + "G";
-      } else if (encrypt == "....") {
-        translator = translator + "H";
-      } else if (encrypt == "..") {
-        translator = translator + "I";
-      } else if (encrypt == ".---") {
-        translator = translator + "J";
-      } else if (encrypt == "-.-") {
-        translator = translator + "K";
-      } else if (encrypt == ".-..") {
-        translator = translator + "L";
-      } else if (encrypt == "--") {
-        translator = translator + "M"; 
-      } else if (encrypt == "-.") {
-        translator = translator + "N";
-      } else if(encrypt == "---") {
-        translator = translator + "O";
-      } else if (encrypt == ".--.") {
-        translator = translator + "P";
-      } else if (encrypt == "--.-") {
-        translator = translator + "Q";
-      } else if (encrypt == ".-.") {
-        translator = translator + "R";
-      } else if (encrypt == "...") {
-        translator = translator + "S";
-      } else if (encrypt == "-") {
-        translator = translator + "T";
-      } else if (encrypt == "..-") {
-        translator = translator + "U";
-      } else if (encrypt == "...-") {
-        translator = translator + "V";
-      } else if (encrypt == ".--") {
-        translator = translator + "W";
-      } else if (encrypt == "-..-") {
-        translator = translator + "X";
-      } else if (encrypt == "-.--") {
-        translator = translator + "Y";
-      } else if (encrypt == "--..") {
-        translator = translator + "Z";
-      }
+String output(String ENCRYPT) { //Funktion för att översätta morsekoden. Switch commandot funkade inte pga det gick inte att läga in sträningar i case. D: 
+      if (ENCRYPT == ".-") {
+      translator = "A";
+      } else if (ENCRYPT == "-...") {
+        translator = "B";
+      } else if (ENCRYPT == "-.-.") {
+        translator = "C";
+      } else if (ENCRYPT == "-..") {
+        translator = "D";
+      } else if (ENCRYPT == ".") {
+        translator = "E";
+      } else if (ENCRYPT == "..-.") {
+        translator = "F";
+      } else if (ENCRYPT == "--.") {
+        translator = "G";
+      } else if (ENCRYPT == "....") {
+        translator = "H";
+      } else if (ENCRYPT == "..") {
+        translator = "I";
+      } else if (ENCRYPT == ".---") {
+        translator = "J";
+      } else if (ENCRYPT == "-.-") {
+        translator = "K";
+      } else if (ENCRYPT == ".-..") {
+        translator = "L";
+      } else if (ENCRYPT == "--") {
+        translator = "M"; 
+      } else if (ENCRYPT == "-.") {
+        translator = "N";
+      } else if(ENCRYPT == "---") {
+        translator = "O";
+      } else if (ENCRYPT == ".--.") {
+        translator = "P";
+      } else if (ENCRYPT == "--.-") {
+        translator = "Q";
+      } else if (ENCRYPT == ".-.") {
+        translator = "R";
+      } else if (ENCRYPT == "...") {
+        translator = "S";
+      } else if (ENCRYPT == "-") {
+        translator = "T";
+      } else if (ENCRYPT == "..-") {
+        translator = "U";
+      } else if (ENCRYPT == "...-") {
+        translator = "V";
+      } else if (ENCRYPT == ".--") {
+        translator = "W";
+      } else if (ENCRYPT == "-..-") {
+        translator = "X";
+      } else if (ENCRYPT == "-.--") {
+        translator = "Y";
+      } else if (ENCRYPT == "--..") {
+        translator = "Z";
+      } 
   return translator;
 }
 
@@ -158,177 +161,203 @@ void loop() {
 
   if (Serial.available() > 0) { //Denna kommer aktiveras när man skriver något i Serial Monitor
     while (true) {
-    
-    
-    char Letter = Serial.read(); 
-    Serial.print(Letter);
+     
+    int Letter = Serial.read();
+    char letter = Letter; 
+    Serial.print(letter);
 
  
     switch (Letter) { //Här kollar programmet vilken bokstav som är på plats inom "The serial buffer".
-      case 'a':
-      case 'A':
+      case 65: //A
+      case 97:
         dot();
         dash();
+        delay(200);
         break;
-      case 'b':
-      case 'B':
+      case 66: //B
+      case 98:
         dash();
         dot();
         dot();
         dot();
+        delay(200);
         break;
-      case 'c':
-      case 'C':
+      case 67: //C
+      case 99:
         dash();
         dot();
         dash();
         dot();
+        delay(200);
         break;
-      case 'd':
-      case 'D':
+      case 68: //D
+      case 100:
         dash();
         dot();
         dot();
+        delay(200);
         break;
-      case 'e':
-      case 'E':
+      case 69: //E
+      case 101:
         dot();
+        delay(200);
         break;
-      case 'f':
-      case 'F':
+      case 70: //F
+      case 102:
         dot();
         dot();
         dash();
         dot();
+        delay(200);
         break;
-      case 'g':
-      case 'G':
+      case 71: //G
+      case 103:
         dash();
         dash();
         dot();
+        delay(200);
         break;
-      case 'h':
-      case 'H':
+      case 72: //H
+      case 104:
         dot();
         dot();
         dot();
         dot();
+        delay(200);
         break;
-      case 'i':
-      case 'I':
+      case 73: //
+      case 105:
         dot();
         dot();
+        delay(200);
         break;
-      case 'j':
-      case 'J':
+      case 74: //J
+      case 106:
         dot();
         dash();
         dash();
         dash();
+        delay(200);
         break;
-      case 'k':
-      case 'K':
+      case 75: //K
+      case 107:
         dash();
         dot();
         dash();
+        delay(200);
         break;
-      case 'l':
-      case 'L':
+      case 76: //L
+      case 108:
         dot();
         dash();
         dot();
         dot();
+        delay(200);
         break;
-      case 'm':
-      case 'M':
+      case 77: //M
+      case 109:
         dash();
         dash();
+        delay(200);
         break;
-      case 'n':
-      case 'N':
+      case 78: //N
+      case 110:
         dash();
         dot();
+        delay(200);
         break;
-      case 'o':
-      case 'O':
+      case 79: //O
+      case 111:
         dash();
         dash();
         dash();
+        delay(200);
         break;
-      case 'p':
-      case 'P':
+      case 80: //P
+      case 112:
         dot();
         dash();
         dash();
         dot();
+        delay(200);
         break;
-      case 'q':
-      case 'Q':
+      case 81: //Q
+      case 113:
         dash();
         dash();
         dot();
         dash();
+        delay(200);
         break;
-      case 'r':
-      case 'R':
+      case 82: //R
+      case 114:
         dot();
         dash();
         dot();
+        delay(200);
         break;
-      case 's':
-      case 'S':
+      case 83: //S
+      case 115:
         dot();
         dot();
         dot();
+        delay(200);
         break;
-      case 't':
-      case 'T':
+      case 84: //T
+      case 116:
         dash();
+        delay(200);
         break;
-      case 'u':
-      case 'U':
+      case 85: //U
+      case 117:
         dot();
         dot();
         dash();
+        delay(200);
         break;
-      case 'v':
-      case 'V':
+      case 86: //V
+      case 118:
         dot();
         dot();
         dot();
         dash();
+        delay(200);
         break;
-      case 'w':
-      case 'W':
+      case 87: //W
+      case 119:
         dot();
         dash();
         dash();
+        delay(200);
         break;
-      case 'x':
-      case 'X':
+      case 88: //X
+      case 120:
         dash();
         dot();
         dot();
         dash();
+        delay(200);
         break;
-      case 'y':
-      case 'Y':
+      case 89: //Y
+      case 121:
         dash();
         dot();
         dash();
         dash();
+        delay(200);
         break;
-      case 'z':
-      case 'Z':
+      case 90: //Z
+      case 122:
         dash();
         dash();
         dot();
         dot();
+        delay(200);
         break;
+      case 32:
+        delay(500); //SPACE 
       default:
-        Serial.println("Non lettern\n"); //Ingen bokstav
-        break;
-    
+        break;  
     }
     Serial.println("\n");
     break;
@@ -337,54 +366,62 @@ void loop() {
 
 
   sens_state = digitalRead(sensor); //Ljussensorn kollar efter laserns ljus
-  //Serial.println("Start");
+  //Serial.println(sens_state);
+
   if (!encryptionDone && sens_state == 0) {
-    while (i < Next_sing) {
+    do {
+      SIGNAL_TIME = 0;
       Serial.print("Encrypting Morse Code: ");
-      encrypt = input(sens_state);
-      Morse_code += encrypt;
+      ENCRYPT = input(sens_state);
+      MORSE_CODE += ENCRYPT;
       sens_state = digitalRead(sensor);
-      Serial.println(Morse_code);
+      Serial.println(MORSE_CODE);
 
-      while (sens_state == 1) {
+      while (sens_state == 1 && signalDone == false) {
         sens_state = digitalRead(sensor);
-        i++;
-        Serial.println(i);
-
+        SIGNAL_TIME++;
+        Serial.print("Timing: ");
+        Serial.println(SIGNAL_TIME);
         if (sens_state == 0) { //Nästa signal
-          i = 0;
           break;
-        } else if (i > Next_sing) { //Gå vidare till översättning
+        } else if (SIGNAL_TIME > NEXT_WORD) {
           break;
         }
       }
 
+      if (SIGNAL_TIME >= NEXT_LETTER && SIGNAL_TIME < NEXT_WORD) {
+        Serial.println("Nästa bokstav");
+        break;
+      }
+      
+
+      } while (SIGNAL_TIME < NEXT_LETTER || SIGNAL_TIME < NEXT_WORD);
+      
+       
+      encryptionDone = true;
     }
-
-    encryptionDone = true;
-  }
-
-  if (encryptionDone) {
-    decrypt = output(Morse_code);
-    result += decrypt;
-    Morse_code = "";
-    //Serial.println(result);
-    i = 0;
-    
-    lcd.clear();
-    lcd.print(result);
-    encryptionDone = false;
-    Serial.println("Next signal");
-  }
-}
-
-
-
-    
-
   
 
 
 
 
 
+
+  if (encryptionDone) {
+    DECRYPT = output(MORSE_CODE);
+    RESULT += DECRYPT;
+    MORSE_CODE = "";
+    //Serial.println(RESULT);
+    if (SIGNAL_TIME >= NEXT_WORD) {
+      RESULT += " ";
+    }
+    SIGNAL_TIME = 0;
+
+    
+    lcd.clear();
+    lcd.print(RESULT);
+
+    encryptionDone = false;
+    Serial.println("Next signal");
+  }
+}
