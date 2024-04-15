@@ -9,138 +9,17 @@
 #define sensor 6
 
 #include <LiquidCrystal_I2C.h>
-#include <string.h>
+#include "Functions.h"
+#include "Variables.h"
 
 int X = 16;
 int Y = 2; 
 LiquidCrystal_I2C lcd(0x27, X, Y);
 
-//Variabler
-int sens_state = 1; //Ljussensorns värde
-int count = 0; //Hur länge ljuset lyser i singnalen (kolla input funktionen)
-const int timing = 50; //En konstant timing för olika saker
-const int NEXT_LETTER = 50; // Timingen när nästa bokstav ska komma
-const int NEXT_WORD = 90; //Denna ska alltid vara större än NEXT_LETTER
-const int DOT_BLINK = 100;
-const int DASH_BLINK = DOT_BLINK * 3;
-String ENCRYPT; //
-String translator;
-String DECRYPT;
-String RESULT;
-bool encryptionDone = false;
-bool signalDone = false;
-int DOT_THRESHOLD = 10;
-String MORSE_CODE = "";
-int SIGNAL_TIME = 0; //Räknar timingen mellan singnal
-
-void dot() { //Funktion till att blinka en DOT (Kort blinkning)
-  Serial.print(" .");
-  digitalWrite(LASER, LOW);
-  delay(BLINK);
-  digitalWrite(LASER, HIGH);
-  delay(200); //Ändra till NEXT_LETTER???
-}
-
-void dash() { //Funktion till att blinka en DASH (Lång blinkning)
-  Serial.print(" -");
-  digitalWrite(LASER, LOW);
-  delay(BLINK * 3);
-  digitalWrite(LASER, HIGH);
-  delay(200); //Ändra till NEXT_LETTER???
-}
-
-String input(int sens_state) { //Funktion för att omvandla lasersingnal till kod
-  String ENCRYPT = "";
-  count = 0;
-  while (true) {
-    do  {
-      //FAS 1
-      count++;
-      sens_state = digitalRead(sensor);
-      delay(timing);
-      //Serial.println(count);
-    } while (sens_state == 0);
-
-    //FAS 2
-    //Serial.println(count);
-
-    if (count <= DOT_THRESHOLD) {
-        ENCRYPT += ".";
-        break;
-    } else if (count > DOT_THRESHOLD) {
-        ENCRYPT += "-";
-        break;
-    }
-
-  }
-  count = 0;
-  return ENCRYPT; //RETURNING STRING
-
-}
-
-
-String output(String ENCRYPT) { //Funktion för att översätta morsekoden. Switch commandot funkade inte pga det gick inte att läga in sträningar i case. D: 
-      if (ENCRYPT == ".-") {
-      translator = "A";
-      } else if (ENCRYPT == "-...") {
-        translator = "B";
-      } else if (ENCRYPT == "-.-.") {
-        translator = "C";
-      } else if (ENCRYPT == "-..") {
-        translator = "D";
-      } else if (ENCRYPT == ".") {
-        translator = "E";
-      } else if (ENCRYPT == "..-.") {
-        translator = "F";
-      } else if (ENCRYPT == "--.") {
-        translator = "G";
-      } else if (ENCRYPT == "....") {
-        translator = "H";
-      } else if (ENCRYPT == "..") {
-        translator = "I";
-      } else if (ENCRYPT == ".---") {
-        translator = "J";
-      } else if (ENCRYPT == "-.-") {
-        translator = "K";
-      } else if (ENCRYPT == ".-..") {
-        translator = "L";
-      } else if (ENCRYPT == "--") {
-        translator = "M"; 
-      } else if (ENCRYPT == "-.") {
-        translator = "N";
-      } else if(ENCRYPT == "---") {
-        translator = "O";
-      } else if (ENCRYPT == ".--.") {
-        translator = "P";
-      } else if (ENCRYPT == "--.-") {
-        translator = "Q";
-      } else if (ENCRYPT == ".-.") {
-        translator = "R";
-      } else if (ENCRYPT == "...") {
-        translator = "S";
-      } else if (ENCRYPT == "-") {
-        translator = "T";
-      } else if (ENCRYPT == "..-") {
-        translator = "U";
-      } else if (ENCRYPT == "...-") {
-        translator = "V";
-      } else if (ENCRYPT == ".--") {
-        translator = "W";
-      } else if (ENCRYPT == "-..-") {
-        translator = "X";
-      } else if (ENCRYPT == "-.--") {
-        translator = "Y";
-      } else if (ENCRYPT == "--..") {
-        translator = "Z";
-      } 
-  return translator;
-}
-
-
-
 void setup() {
   Serial.begin(9600);
   pinMode(LASER, OUTPUT);
+  pinMode(sensor, INPUT);
   
   digitalWrite(LASER, HIGH);
 
@@ -154,8 +33,6 @@ void setup() {
   lcd.print("signal ...");
 
 }
-
-
 
 void loop() {
 
@@ -370,6 +247,7 @@ void loop() {
 
   if (!encryptionDone && sens_state == 0) {
     do {
+      ENCRYPT = "";
       SIGNAL_TIME = 0;
       Serial.print("Encrypting Morse Code: ");
       ENCRYPT = input(sens_state);
@@ -377,7 +255,7 @@ void loop() {
       sens_state = digitalRead(sensor);
       Serial.println(MORSE_CODE);
 
-      while (sens_state == 1 && signalDone == false) {
+      while (sens_state == 1) {
         sens_state = digitalRead(sensor);
         SIGNAL_TIME++;
         Serial.print("Timing: ");
@@ -396,7 +274,7 @@ void loop() {
     } while (SIGNAL_TIME < NEXT_LETTER || SIGNAL_TIME < NEXT_WORD);
        
       encryptionDone = true;
-    }
+  }
   
 
   if (encryptionDone) {
@@ -408,6 +286,7 @@ void loop() {
       RESULT += " ";
     }
     SIGNAL_TIME = 0;
+    ENCRYPT = "";
 
     
     lcd.clear();
