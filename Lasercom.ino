@@ -279,18 +279,18 @@ void loop() {
 
   if (encryptionDone) {
     DECRYPT = output(MORSE_CODE);
-    RESULT += DECRYPT;
+    MESSAGE += DECRYPT;
     MORSE_CODE = "";
-    //Serial.println(RESULT);
+    //Serial.println(MESSAGE);
     if (SIGNAL_TIME >= NEXT_WORD) {
-      RESULT += " ";
+      MESSAGE += " ";
     }
     SIGNAL_TIME = 0;
     ENCRYPT = "";
 
     
     lcd.clear();
-    lcd.print(RESULT);
+    lcd.print(MESSAGE);
 
     encryptionDone = false;
     Serial.println("Next signal");
