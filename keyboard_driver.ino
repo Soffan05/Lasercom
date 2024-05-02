@@ -1,4 +1,4 @@
-#include <math.h>
+// #include <math.h>
 
 #define RED 10
 #define GREEN 11
@@ -20,6 +20,18 @@ void setup() {
     pinMode(HID[i], INPUT);
   }
 }
+
+int pow(int num, int exp){
+    if(exp == 0){
+        return 1;
+    }
+    int tot = 1;
+    for (int i = 0; i<exp; i++){
+        tot *= num;
+    }
+    return tot;
+}
+
 
 int key(){
   int val = 0;
