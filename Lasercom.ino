@@ -49,7 +49,7 @@ void loop() {
       case 97:
         dot();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 66: //B
       case 98:
@@ -57,7 +57,7 @@ void loop() {
         dot();
         dot();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 67: //C
       case 99:
@@ -65,19 +65,19 @@ void loop() {
         dot();
         dash();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 68: //D
       case 100:
         dash();
         dot();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 69: //E
       case 101:
         dot();
-        delay(200);
+        delay(300);
         break;
       case 70: //F
       case 102:
@@ -85,14 +85,14 @@ void loop() {
         dot();
         dash();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 71: //G
       case 103:
         dash();
         dash();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 72: //H
       case 104:
@@ -100,13 +100,13 @@ void loop() {
         dot();
         dot();
         dot();
-        delay(200);
+        delay(300);
         break;
-      case 73: //
+      case 73: // I
       case 105:
         dot();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 74: //J
       case 106:
@@ -114,14 +114,14 @@ void loop() {
         dash();
         dash();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 75: //K
       case 107:
         dash();
         dot();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 76: //L
       case 108:
@@ -129,26 +129,26 @@ void loop() {
         dash();
         dot();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 77: //M
       case 109:
         dash();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 78: //N
       case 110:
         dash();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 79: //O
       case 111:
         dash();
         dash();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 80: //P
       case 112:
@@ -156,7 +156,7 @@ void loop() {
         dash();
         dash();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 81: //Q
       case 113:
@@ -164,33 +164,33 @@ void loop() {
         dash();
         dot();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 82: //R
       case 114:
         dot();
         dash();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 83: //S
       case 115:
         dot();
         dot();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 84: //T
       case 116:
         dash();
-        delay(200);
+        delay(300);
         break;
       case 85: //U
       case 117:
         dot();
         dot();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 86: //V
       case 118:
@@ -198,14 +198,14 @@ void loop() {
         dot();
         dot();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 87: //W
       case 119:
         dot();
         dash();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 88: //X
       case 120:
@@ -213,7 +213,7 @@ void loop() {
         dot();
         dot();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 89: //Y
       case 121:
@@ -221,7 +221,7 @@ void loop() {
         dot();
         dash();
         dash();
-        delay(200);
+        delay(300);
         break;
       case 90: //Z
       case 122:
@@ -229,7 +229,7 @@ void loop() {
         dash();
         dot();
         dot();
-        delay(200);
+        delay(300);
         break;
       case 32:
         delay(500); //SPACE 
