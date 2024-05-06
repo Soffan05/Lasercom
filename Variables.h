@@ -11,7 +11,7 @@ extern const int DASH_BLINK;
 extern String ENCRYPT;
 extern String translator;
 extern String DECRYPT;
-extern String RESULT;
+extern String MESSAGE;
 extern bool encryptionDone;
 extern int DOT_THRESHOLD;
 extern String MORSE_CODE;
