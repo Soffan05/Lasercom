@@ -16,5 +16,4 @@ extern bool encryptionDone;
 extern int DOT_THRESHOLD;
 extern String MORSE_CODE;
 extern int SIGNAL_TIME;
-
 #endif
