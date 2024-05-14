@@ -241,9 +241,9 @@ void loop() {
     } 
   }
 
-
+ //Programmet startar här
+  
   sens_state = digitalRead(sensor); //Ljussensorn kollar efter laserns ljus
-  //Serial.println(sens_state);
 
   if (!encryptionDone && sens_state == 0) {
     do {
