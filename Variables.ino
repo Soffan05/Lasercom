@@ -9,9 +9,18 @@ String ENCRYPT; //
 String translator;
 String DECRYPT;
 String MESSAGE;
+int position = 0;
 bool encryptionDone = false;
 int DOT_THRESHOLD = 5;
 String MORSE_CODE = "";
 int SIGNAL_TIME = 0; //Räknar timingen mellan singnal
+
+
+//Knapp
+int QB_status = 0;
+int YESB_status = 0;
+int NOB_status = 0;
+int CALB_status = 0;
+
 
 

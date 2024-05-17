@@ -11,10 +11,25 @@
 #include <LiquidCrystal_I2C.h>
 #include "Functions.h"
 #include "Variables.h"
+#include <string.h>
+
+#define QUESTION_B 2
+#define YES_B 3
+#define NO_B 4
+#define CAL_B 5
 
 int X = 16;
 int Y = 2; 
 LiquidCrystal_I2C lcd(0x27, X, Y);
+
+int B_status = 1;
+char questions[][25] = {"Do you like donuts?","Do you love me","Are you doing good","Dont you like me","Do you hate me"};
+int i = 0;
+int j = 0;
+char sentence[25];
+char *Letter = sentence;
+
+
 
 void setup() {
   Serial.begin(9600);
@@ -22,6 +37,11 @@ void setup() {
   pinMode(sensor, INPUT);
   
   digitalWrite(LASER, HIGH);
+
+  pinMode(QUESTION_B, INPUT); 
+  pinMode(YES_B, INPUT);
+  pinMode(NO_B, INPUT);
+  pinMode(CAL_B, INPUT);
 
   lcd.init();
   lcd.backlight();
@@ -36,214 +56,286 @@ void setup() {
 
 void loop() {
 
-  if (Serial.available() > 0) { //Denna kommer aktiveras när man skriver något i Serial Monitor
-    while (true) {
-     
-    int Letter = Serial.read();
-    char letter = Letter; 
-    Serial.print(letter);
+  QB_status = digitalRead(QUESTION_B);
+  YESB_status = digitalRead(YES_B);
+  NOB_status = digitalRead(NO_B);
+  CALB_status = digitalRead(CAL_B);  
+  delay(50);
 
- 
-    switch (Letter) { //Här kollar programmet vilken bokstav som är på plats inom "The serial buffer".
-      case 65: //A
-      case 97:
-        dot();
-        dash();
-        delay(300);
+  if (CALB_status && B_status) {
+    while (true) {
+      CALB_status = digitalRead(CAL_B); 
+      digitalWrite(LASER, LOW);
+
+      if (!CALB_status) {
+        digitalWrite(LASER, HIGH);
         break;
-      case 66: //B
-      case 98:
-        dash();
-        dot();
-        dot();
-        dot();
-        delay(300);
-        break;
-      case 67: //C
-      case 99:
-        dash();
-        dot();
-        dash();
-        dot();
-        delay(300);
-        break;
-      case 68: //D
-      case 100:
-        dash();
-        dot();
-        dot();
-        delay(300);
-        break;
-      case 69: //E
-      case 101:
-        dot();
-        delay(300);
-        break;
-      case 70: //F
-      case 102:
-        dot();
-        dot();
-        dash();
-        dot();
-        delay(300);
-        break;
-      case 71: //G
-      case 103:
-        dash();
-        dash();
-        dot();
-        delay(300);
-        break;
-      case 72: //H
-      case 104:
-        dot();
-        dot();
-        dot();
-        dot();
-        delay(300);
-        break;
-      case 73: // I
-      case 105:
-        dot();
-        dot();
-        delay(300);
-        break;
-      case 74: //J
-      case 106:
-        dot();
-        dash();
-        dash();
-        dash();
-        delay(300);
-        break;
-      case 75: //K
-      case 107:
-        dash();
-        dot();
-        dash();
-        delay(300);
-        break;
-      case 76: //L
-      case 108:
-        dot();
-        dash();
-        dot();
-        dot();
-        delay(300);
-        break;
-      case 77: //M
-      case 109:
-        dash();
-        dash();
-        delay(300);
-        break;
-      case 78: //N
-      case 110:
-        dash();
-        dot();
-        delay(300);
-        break;
-      case 79: //O
-      case 111:
-        dash();
-        dash();
-        dash();
-        delay(300);
-        break;
-      case 80: //P
-      case 112:
-        dot();
-        dash();
-        dash();
-        dot();
-        delay(300);
-        break;
-      case 81: //Q
-      case 113:
-        dash();
-        dash();
-        dot();
-        dash();
-        delay(300);
-        break;
-      case 82: //R
-      case 114:
-        dot();
-        dash();
-        dot();
-        delay(300);
-        break;
-      case 83: //S
-      case 115:
-        dot();
-        dot();
-        dot();
-        delay(300);
-        break;
-      case 84: //T
-      case 116:
-        dash();
-        delay(300);
-        break;
-      case 85: //U
-      case 117:
-        dot();
-        dot();
-        dash();
-        delay(300);
-        break;
-      case 86: //V
-      case 118:
-        dot();
-        dot();
-        dot();
-        dash();
-        delay(300);
-        break;
-      case 87: //W
-      case 119:
-        dot();
-        dash();
-        dash();
-        delay(300);
-        break;
-      case 88: //X
-      case 120:
-        dash();
-        dot();
-        dot();
-        dash();
-        delay(300);
-        break;
-      case 89: //Y
-      case 121:
-        dash();
-        dot();
-        dash();
-        dash();
-        delay(300);
-        break;
-      case 90: //Z
-      case 122:
-        dash();
-        dash();
-        dot();
-        dot();
-        delay(300);
-        break;
-      case 32:
-        delay(500); //SPACE 
-      default:
-        break;  
+      }     
+
     }
-    Serial.println("\n");
-    break;
-    } 
+    B_status = 0;
+  } else if (NOB_status && B_status) {
+    Letter = "NO";
+    B_status = 0;
+    MESSAGE = "";
+  } else if (YESB_status && B_status) {
+    Letter = "YES";
+    B_status = 0;
+    MESSAGE = "";
+  } else if (QB_status && B_status) {
+    Letter = questions[i];
+    i++;
+    i++;
+    if (i == 5) {
+      i = 0;
+    }
+    B_status = 0;
+    MESSAGE = "";
   }
+
+  int str_len = strlen(Letter);
+
+
+  if (!B_status) { //Denna kommer aktiveras när man skriver något i Serial Monitor
+    while (j < str_len) {
+      //Serial.println(Letter);
+
+      int char_num = Letter[j];
+
+      switch (char_num) { //Här kollar programmet vilken bokstav som är på plats inom "The serial buffer".
+        case 65: //A
+        case 97:
+          Serial.println('A');
+          dot();
+          dash();
+          delay(300);
+          break;
+        case 66: //B
+        case 98:
+          Serial.println('B');
+          dash();
+          dot();
+          dot();
+          dot();
+          delay(300);
+          break;
+        case 67: //C
+        case 99:
+          Serial.println('C');
+          dash();
+          dot();
+          dash();
+          dot();
+          delay(300);
+          break;
+        case 68: //D
+        case 100:
+          Serial.println('D');
+          dash();
+          dot();
+          dot();
+          delay(300);
+          break;
+        case 69: //E
+        case 101:
+          Serial.println('E');
+          dot();
+          delay(300);
+          break;
+        case 70: //F
+        case 102:
+          Serial.println('F');
+          dot();
+          dot();
+          dash();
+          dot();
+          delay(300);
+          break;
+        case 71: //G
+        case 103:
+          Serial.println('G');
+          dash();
+          dash();
+          dot();
+          delay(300);
+          break;
+        case 72: //H
+        case 104:
+          Serial.println('H');
+          dot();
+          dot();
+          dot();
+          dot();
+          delay(300);
+          break;
+        case 73: // I
+        case 105:
+          Serial.println('I');
+          dot();
+          dot();
+          delay(300);
+          break;
+        case 74: //J
+        case 106:
+          Serial.println('J');
+          dot();
+          dash();
+          dash();
+          dash();
+          delay(300);
+          break;
+        case 75: //K
+        case 107:
+          Serial.println('K');
+          dash();
+          dot();
+          dash();
+          delay(300);
+          break;
+        case 76: //L
+        case 108:
+          Serial.println('L');
+          dot();
+          dash();
+          dot();
+          dot();
+          delay(300);
+          break;
+        case 77: //M
+        case 109:
+          Serial.println('M');
+          dash();
+          dash();
+          delay(300);
+          break;
+        case 78: //N
+        case 110:
+          Serial.println('N');
+          dash();
+          dot();
+          delay(300);
+          break;
+        case 79: //O
+        case 111:
+          Serial.println('O');
+          dash();
+          dash();
+          dash();
+          delay(300);
+          break;
+        case 80: //P
+        case 112:
+          Serial.println('P');
+          dot();
+          dash();
+          dash();
+          dot();
+          delay(300);
+          break;
+        case 81: //Q
+        case 113:
+          Serial.println('Q');
+          dash();
+          dash();
+          dot();
+          dash();
+          delay(300);
+          break;
+        case 82: //R
+        case 114:
+          Serial.println('R');
+          dot();
+          dash();
+          dot();
+          delay(300);
+          break;
+        case 83: //S
+        case 115:
+          Serial.println('S');
+          dot();
+          dot();
+          dot();
+          delay(300);
+          break;
+        case 84: //T
+        case 116:
+          Serial.println('T');
+          dash();
+          delay(300);
+          break;
+        case 85: //U
+        case 117:
+          Serial.println('U');
+          dot();
+          dot();
+          dash();
+          delay(300);
+          break;
+        case 86: //V
+        case 118:
+          Serial.println('V');
+          dot();
+          dot();
+          dot();
+          dash();
+          delay(300);
+          break;
+        case 87: //W
+        case 119:
+          Serial.println('W');
+          dot();
+          dash();
+          dash();
+          delay(300);
+          break;
+        case 88: //X
+        case 120:
+          Serial.println('X');
+          dash();
+          dot();
+          dot();
+          dash();
+          delay(300);
+          break;
+        case 89: //Y
+        case 121:
+          Serial.println('Y');
+          dash();
+          dot();
+          dash();
+          dash();
+          delay(300);
+          break;
+        case 90: //Z
+        case 122:
+          Serial.println('Z');
+          dash();
+          dash();
+          dot();
+          dot();
+          delay(300);
+          break;
+        case 32:
+          delay(500); //SPACE 
+        default:
+          break;  
+      }
+
+      j++;
+    } 
+    Letter = "";
+    j = 0;
+  }
+
+  if (!CALB_status && !NOB_status && !YESB_status && !QB_status ) {
+      B_status = 1;
+
+  }
+
 
  //Programmet startar här
   
-  sens_state = digitalRead(sensor); //Ljussensorn kollar efter laserns ljus
+  //sens_state = digitalRead(sensor); //Ljussensorn kollar efter laserns ljus
 
   if (!encryptionDone && sens_state == 0) {
     do {

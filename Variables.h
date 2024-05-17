@@ -16,4 +16,13 @@ extern bool encryptionDone;
 extern int DOT_THRESHOLD;
 extern String MORSE_CODE;
 extern int SIGNAL_TIME;
+
+extern int QB_status;
+extern int YESB_status;
+extern int NOB_status;
+extern int CALB_status;
+
+
+
+
 #endif
