@@ -7,4 +7,5 @@ void dash();
 String input(int sens_state);
 String output(String ENCRYPT);
 
+
 #endif

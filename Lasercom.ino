@@ -23,7 +23,7 @@ int Y = 2;
 LiquidCrystal_I2C lcd(0x27, X, Y);
 
 int B_status = 1;
-char questions[][25] = {"Do you like donuts?","Do you love me","Are you doing good","Dont you like me","Do you hate me"};
+char questions[][25] = {"You like melons?","Midgard?","Cupcake?","Ikea meatballs?","You need help?"};
 int i = 0;
 int j = 0;
 char sentence[25];
@@ -60,7 +60,6 @@ void loop() {
   YESB_status = digitalRead(YES_B);
   NOB_status = digitalRead(NO_B);
   CALB_status = digitalRead(CAL_B);  
-  delay(50);
 
   if (CALB_status && B_status) {
     while (true) {
@@ -71,8 +70,8 @@ void loop() {
         digitalWrite(LASER, HIGH);
         break;
       }     
-
     }
+    MESSAGE = "";
     B_status = 0;
   } else if (NOB_status && B_status) {
     Letter = "NO";
@@ -84,7 +83,6 @@ void loop() {
     MESSAGE = "";
   } else if (QB_status && B_status) {
     Letter = questions[i];
-    i++;
     i++;
     if (i == 5) {
       i = 0;
@@ -140,7 +138,7 @@ void loop() {
         case 101:
           Serial.println('E');
           dot();
-          delay(300);
+          delay(400);
           break;
         case 70: //F
         case 102:
@@ -315,6 +313,14 @@ void loop() {
           dot();
           delay(300);
           break;
+        case 63:
+          dot();
+          dot();
+          dash();
+          dash();
+          dot();
+          dot();
+          delay(300);
         case 32:
           delay(500); //SPACE 
         default:
@@ -335,7 +341,7 @@ void loop() {
 
  //Programmet startar här
   
-  //sens_state = digitalRead(sensor); //Ljussensorn kollar efter laserns ljus
+  sens_state = digitalRead(sensor); //Ljussensorn kollar efter laserns ljus
 
   if (!encryptionDone && sens_state == 0) {
     do {
@@ -347,9 +353,9 @@ void loop() {
       sens_state = digitalRead(sensor);
       Serial.println(MORSE_CODE);
 
-      while (sens_state == 1) {
-        sens_state = digitalRead(sensor);
+      while (sens_state == 1) { //ardinon räknar hur länge ljussensorn inte är utsätts för laserns ljus
         SIGNAL_TIME++;
+        sens_state = digitalRead(sensor);
         Serial.print("Timing: ");
         Serial.println(SIGNAL_TIME);
         if (sens_state == 0) { //Nästa signal
@@ -373,7 +379,7 @@ void loop() {
     DECRYPT = output(MORSE_CODE);
     MESSAGE += DECRYPT;
     MORSE_CODE = "";
-    //Serial.println(MESSAGE);
+    Serial.println(MESSAGE);
     if (SIGNAL_TIME >= NEXT_WORD) {
       MESSAGE += " ";
     }

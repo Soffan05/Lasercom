@@ -1,4 +1,5 @@
 #include "Variables.h"
+#define LASER 8
 
 void dot() { //Funktion till att blinka en DOT (Kort blinkning)
   Serial.print(" .");
@@ -98,6 +99,9 @@ String output(String ENCRYPT) { //Funktion för att översätta morsekoden. Swit
         translator = "Y";
       } else if (ENCRYPT == "--..") {
         translator = "Z";
-      } 
+      } else if (ENCRYPT == "..--..") {
+        translator = "?";
+      }
   return translator;
 }
+
