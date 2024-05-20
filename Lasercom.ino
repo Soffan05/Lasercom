@@ -23,7 +23,8 @@ int Y = 2;
 LiquidCrystal_I2C lcd(0x27, X, Y);
 
 int B_status = 1;
-char questions[][25] = {"You like melons?","Midgard?","Cupcake?","Ikea meatballs?","You need help?"};
+char questions[][25] = {"You like donuts?", "Cupcake?", "Ikea meatballs?", "Do you like dogs?","Are monkeys cool?", "Can you drive?"};
+//char questions[][25] = {"Can penguins fly?", "Is earth flat?", "The muffin man?", "Is it disgusting?", "Crocodiles walk?", "Is math hard?"};
 int i = 0;
 int j = 0;
 char sentence[25];
