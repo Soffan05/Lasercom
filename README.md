@@ -1,5 +1,5 @@
 # LaserCom
-I this project two independent arduino-devices was built to communicate wirelessly only using laser and photoresistors.
+In this project two independent arduino-devices was built to communicate wirelessly only using laser-diodes and photoresistors.
 This was my "Gymnasiearbete" during my last semester of "Gymnasiet". 
 
 Final Result:
