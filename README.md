@@ -6,4 +6,4 @@ Final Result:
 ![Gymnasiearbete slutresultat ](https://github.com/user-attachments/assets/2295a810-c885-462d-ba9a-e26310f5752e)
 
 My lab report for the project (in swedish):
-[Uploading Rapport _ Gymnasiearbete .pdf…]()
+[Rapport för LaserCom .pdf](https://github.com/user-attachments/files/18352894/Rapport._.Gymnasiearbete.pdf)
